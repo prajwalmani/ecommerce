@@ -1,3 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class='text-center'>
+  <h1>{{title}}</h1>
+  </div>
+  <div class="container">
+      <div class='row'>
+          <div class="col">
+            <img src="{% static 'img/beach.jpg'%}"  class='img-fluid' alt="">
+              {{ content }}
+          </div>
+      </div>
+      {% if requesr.user.is_authenticated %}
+      <div class='row'>
+        <div class="col">
+          <h1>Premium</h1> 
+            {{ premium_content }}
+        </div>
+    </div>
+    {% endif %}
+  </div>
+
+{% endblock%}
 {% load static %}
 <!doctype html>
     <html lang="en">
@@ -11,25 +35,7 @@
     <link rel="stylesheet" href='{% static "css/main.css" %}'>
   </head>
   <body>
-  <div class='text-center'>
-    <h1>{{title}}</h1>
-    </div>
-    <div class="container">
-        <div class='row'>
-            <div class="col">
-              <img src="{% static 'img/beach.jpg'%}"  class='img-fluid' alt="">
-                {{ content }}
-            </div>
-        </div>
-        {% if requesr.user.is_authenticated %}
-        <div class='row'>
-          <div class="col">
-            <h1>Premium</h1> 
-              {{ premium_content }}
-          </div>
-      </div>
-      {% endif %}
-    </div>
+ 
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
