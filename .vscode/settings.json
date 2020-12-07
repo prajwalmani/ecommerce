@@ -1,0 +1,11 @@
+{
+    "python.pythonPath": "C:\\Users\\prajw\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
+    "python.autoComplete.extraPaths": ["./path-to-your-code"],
+  
+
+
+    "python.jediEnabled": true,
+    "python.languageServer": "Jedi"
+
+    
+}
