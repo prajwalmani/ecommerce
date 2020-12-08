@@ -14,18 +14,20 @@
     <tbody>
         {% for product in cart.products.all %}
       <tr>
-        <th scope="row">{{forloop.counter  }}</th>
-        <td> <a href="{{ product.get_absolute_url }}">{{ product.title  }}</a><small><a href="#">Remove?</a></small></td>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td> <a href="{{ product.get_absolute_url }}">{{ product.title  }}</a>
+          {% include 'products/snippets/update-cart.html' with product=product cart=cart in_cart=True %}
+        </td>
         <td>{{ product.price  }}</td>
       </tr>
       {% endfor %}
       <tr>
         <th colspan="2"></th>
-        <td><b>Subtotal</b>{{ cart.subtotal }}</td>
+        <td><b>Subtotal</b> {{ cart.subtotal }}</td>
       </tr>
       <tr>
         <th colspan="2"></th>
-        <td><b>Total</b>{{ cart.total }}</td>
+        <td><b>Total</b> {{ cart.total }}</td>
       </tr>
     </tbody>
   </table>
