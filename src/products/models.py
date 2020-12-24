@@ -5,7 +5,7 @@ from django.db.models import Q
 
 import os 
 import random
-from .utils import unique_slug_generator
+from ecommerce.utils import unique_slug_generator
 def get_filename_ext(filename):
     base_name=os.path.basename(filename)
     name,ext=os.path.splitext(base_name)
