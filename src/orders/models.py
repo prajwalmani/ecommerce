@@ -3,6 +3,7 @@ from carts.models import Cart
 from ecommerce.utils import unique_order_id_generator
 from django.db import models
 import math
+from billing.models import BillingProfile
 ORDER_STATUS_CHOICES=(
     ('created','Created'),
     ('Paid','Paid'),
@@ -13,13 +14,14 @@ ORDER_STATUS_CHOICES=(
 # Create your models here.
 class Order(models.Model):
     order_id=models.CharField(max_length=120,blank=True)
-    # billing_profile=
+    billing_profile=models.ForeignKey(BillingProfile,null=True,blank=True)
     # shipping_address=
     # billing_address=
     cart=models.ForeignKey(Cart)
     status=models.CharField(max_length=120,default='created',choices=ORDER_STATUS_CHOICES)
     shipping_total=models.DecimalField(default=50,max_digits=100,decimal_places=2)
     total=models.DecimalField(default=0,max_digits=100,decimal_places=2)
+    active=models.BooleanField(default=True)
 
     def __str__(self):
         return self.order_id
