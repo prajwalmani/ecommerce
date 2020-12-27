@@ -4,6 +4,7 @@ from ecommerce.utils import unique_order_id_generator
 from django.db import models
 import math
 from billing.models import BillingProfile
+from addresses.models import Address
 ORDER_STATUS_CHOICES=(
     ('created','Created'),
     ('Paid','Paid'),
@@ -12,11 +13,21 @@ ORDER_STATUS_CHOICES=(
 
 )
 # Create your models here.
+class OrderManager(models.Manager):
+     def new_or_get(self,billing_profile,cart_obj):
+        created=False
+        qs=self.get_queryset( ).filter(billing_profile=billing_profile,cart=cart_obj,active=True)
+        if qs.count()==1:
+            obj=qs.first()
+        else:
+            obj=self.model.object.create(billing_profile=billing_profile,cart=cart_obj)
+            created=True
+        return obj,created
 class Order(models.Model):
     order_id=models.CharField(max_length=120,blank=True)
     billing_profile=models.ForeignKey(BillingProfile,null=True,blank=True)
-    # shipping_address=
-    # billing_address=
+    shipping_address=models.ForeignKey(Address,null=True,blank=True)
+    billing_address=models.ForeignKey(Address,null=True,blank=True)
     cart=models.ForeignKey(Cart)
     status=models.CharField(max_length=120,default='created',choices=ORDER_STATUS_CHOICES)
     shipping_total=models.DecimalField(default=50,max_digits=100,decimal_places=2)
@@ -26,6 +37,7 @@ class Order(models.Model):
     def __str__(self):
         return self.order_id
     
+    objects=OrderManager()
     def update_total(self):
         cart_total=self.cart.total
         shippping_total=self.shipping_total
@@ -38,7 +50,9 @@ class Order(models.Model):
 def pre_save_create_order_id(sender,instance,*args,**kwargs):
     if not instance.order_id:
         instance.order_id=unique_order_id_generator(instance)
-    
+    qs=Order.objects.filter(Cart=instance.cart).exclude(billing_profile=instance.billing_profile)    
+    if qs.exists():
+        qs.update(active=False )
 pre_save.connect(pre_save_create_order_id,sender=Order)
 
 def post_save_cart_total(sender,instance,created,*args,**kwargs):

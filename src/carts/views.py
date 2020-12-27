@@ -4,6 +4,7 @@ from .models import Cart
 from orders.models import Order 
 from billing.models import BillingProfile
 from accounts.models import GuestEmail
+from addresses.forms import AddressForm
 # Create your views here.
 from accounts.forms import LoginForm,GuestFrom
 def cart_create(user=None):
@@ -34,33 +35,22 @@ def checkout_home(request):
     order_obj=None
     if  cart_created or cart_obj.products.count()==0:
         return redirect('cart:home')
-
-    user=request.user
-    billing_profile=None
     login_form=LoginForm()
     guest_form= GuestFrom()
-    quest_email_id=request.session.get('guest_email_id')
-    if user.is_authenticated():
-        billing_profile,billing_profile_created=BillingProfile.objects.get_or_create(user=user,email=user.email)
-    elif quest_email_id is not None:
-        guest_email_obj=GuestEmail.objects.get(id=guest_email_id)
-        billing_profile,billing_guest_profile_created=BillingProfile.objects.get_or_create(email=guest_email_obj.email)
-    else:
-        pass
+    address_form=AddressForm()
+    billing_profile,billing_profile_created=BillingProfile.objects.new_or_get(request)
     if billing_profile is not None:
+        order_obj,order_obj_created=Order.objects.new_or_get(billing_profile,cart_obj)
         order_qs=Order.objects.filter(billing_profile=billing_profile,cart=cart_obj,active=True)
         if order_qs.count()==1:
-            order_obj=order_qs.first(billing_profile=billing_profile,cart=cart_obj)
+            order_obj=order_qs.first()
         else:
-            older_order_qs=Order.objects.exclude(billing_profile=billing_profile).filter(cart=cart_obj,active=True)
-            if older_order_qs.exists():
-                older_order_qs.update(active=False)
             order_obj=Order.objects.create(billing_profile=billing_profile,cart=cart_obj)
     context={
         "object":order_obj,
         "billing_profile":billing_profile,
         "login_form":login_form,
-        "guest_form":guest_form
+        "guest_form":guest_form,
         } 
     return render(request,"carts/checkout.html",context)
    
