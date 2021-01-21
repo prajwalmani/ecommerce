@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate,login,get_user_model
 from django.utils.http import is_safe_url
-from .forms import LoginForm,RegisterForm,GuestFrom
+from .forms import LoginForm,RegisterForm,GuestForm 
 from .models import GuestEmail
 # Create your views here.
 

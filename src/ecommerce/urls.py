@@ -22,7 +22,7 @@ from django.contrib.auth.views import LogoutView
 from accounts.views import login_page,register_page,guest_register_view
 from .views import home_page,about_page,contact_page
 from carts.views import cart_home
-from addresses.views import checkout_address_create_view
+from addresses.views import checkout_address_create_view,checkout_success
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', home_page,name='home'), 
@@ -37,6 +37,7 @@ urlpatterns = [
     url(r'^cart/',include("carts.urls",namespace='cart')),
     url(r'^bootstrap/$',TemplateView.as_view(template_name='bootstrap/example.html')),
     url(r'^resgister/guest/$', guest_register_view,name='guest_register_view'),    
+
 ]
 
 if settings.DEBUG:

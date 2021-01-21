@@ -1,3 +1,9 @@
-body{
-    color: #ccc;
+body {
+    background-image: url('https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8c2hvcHBpbmd8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&w=1000&q=80.jpg');
+    /* background-repeat: repeat; */
+    background-size: cover;
+}
+
+.banner-image {
+    text-align: right;
 }

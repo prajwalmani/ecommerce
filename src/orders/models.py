@@ -1,10 +1,11 @@
-from django.db.models.signals import pre_save,post_save
+import math
+from django.db import models
+from django.db.models.signals import pre_save, post_save
+
+from addresses.models import Address
+from billing.models import BillingProfile
 from carts.models import Cart
 from ecommerce.utils import unique_order_id_generator
-from django.db import models
-import math
-from billing.models import BillingProfile
-from addresses.models import Address
 ORDER_STATUS_CHOICES=(
     ('created','Created'),
     ('Paid','Paid'),
@@ -14,18 +15,26 @@ ORDER_STATUS_CHOICES=(
 )
 # Create your models here.
 class OrderManager(models.Manager):
-     def new_or_get(self,billing_profile,cart_obj):
-        created=False
-        qs=self.get_queryset().filter(billing_profile=billing_profile,cart=cart_obj,active=True,status="created")
-        if qs.count()==1:
-            obj=qs.first()
+    def new_or_get(self, billing_profile, cart_obj):
+        created = False
+        qs = self.get_queryset().filter(
+                billing_profile=billing_profile, 
+                cart=cart_obj, 
+                active=True, 
+                status='created'
+            )
+        if qs.count() == 1:
+            obj = qs.first()
         else:
-            obj=self.model.objects.create(billing_profile=billing_profile,cart=cart_obj)
-            created=True
-        return obj,created
+    
+            obj = self.model.objects.create(
+                    billing_profile=billing_profile, 
+                    cart=cart_obj)
+            created = True
+        return obj, created
 class Order(models.Model):
     billing_profile     = models.ForeignKey(BillingProfile, null=True, blank=True)
-    order_id            = models.CharField(max_length=120, blank=True) # AB31DE3
+    order_id            = models.CharField(max_length=120, blank=True) 
     shipping_address    = models.ForeignKey(Address, related_name="shipping_address",null=True, blank=True)
     billing_address     = models.ForeignKey(Address, related_name="billing_address", null=True, blank=True)
     cart                = models.ForeignKey(Cart)
@@ -40,7 +49,7 @@ class Order(models.Model):
     def update_total(self):
         cart_total=self.cart.total
         shippping_total=self.shipping_total
-        new_total=math.fsum([cart_total+shippping_total])
+        new_total=math.fsum([cart_total,shippping_total])
         formatted_total=format(new_total,'.2f')
         self.total =new_total
         self.save()
@@ -63,7 +72,7 @@ class Order(models.Model):
 def pre_save_create_order_id(sender,instance,*args,**kwargs):
     if not instance.order_id:
         instance.order_id=unique_order_id_generator(instance)
-    qs=Order.objects.filter(Cart=instance.cart).exclude(billing_profile=instance.billing_profile)    
+    qs=Order.objects.filter(cart=instance.cart).exclude(billing_profile=instance.billing_profile)    
     if qs.exists():
         qs.update(active=False )
 pre_save.connect(pre_save_create_order_id,sender=Order)

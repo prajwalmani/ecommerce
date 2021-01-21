@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 
 user=get_user_model()
 
-class GuestFrom(forms.Form):
+class GuestForm(forms.Form):
     email=forms.EmailField()
 
 class LoginForm(forms.Form):

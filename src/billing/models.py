@@ -19,11 +19,11 @@ class BillingProfileManager(models.Manager):
             pass
         return obj,created
 class BillingProfile(models.Model):
-    user=models.OneToOneField  (User,null=True,blank=True)
-    email=models.EmailField()
-    timestamp= models.DateTimeField(auto_now_add=True)
-    update= models.DateTimeField(auto_now=True)
-    active=models.BooleanField(default=True)
+    user = models.OneToOneField(User, null=True, blank=True)
+    email = models.EmailField()
+    active = models.BooleanField(default=True)
+    update = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     objects=BillingProfileManager()
     def __str__(self):

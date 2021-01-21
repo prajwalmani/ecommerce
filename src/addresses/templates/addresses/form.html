@@ -1,11 +1,40 @@
-<form method='POST' action='{% if action_url %}{{ action_url }}{% else %}{% url "login" %}{% endif %}'> {% csrf_token %}
-  {% if next_url %}
+<!-- <form method='POST' > {% csrf_token %}
+  <!-- {% if next_url %}
   <input type='hidden' name='next' value='{{ next_url }}' />
   {% endif %}
 
   {% if address_type %}
   <input type='hidden' name='address_type' value='{{ address_type }}' />
-  {% endif %}
-{{ form.as_p }}
-<button type='submit' class='btn btn-default'>Submit</button>
-</form>
+  {% endif %} -->
+<!-- {{ form.as_p }} -->
+<!-- </form> -->
+<style>
+  input {
+    margin: 5px;
+  }
+  a {
+    margin-left: 5px;
+    margin-top: 10px;
+  }
+
+</style>
+  <!-- 'address_line_1',
+            'address_line_2',
+            'city',
+            'country',
+            'state',
+            'postal_code' -->
+  <input type="text" placeholder="Address Line1">
+  <input type="text" placeholder="Address Line2">
+  <input type="text" placeholder="City">
+  <input type="text" placeholder="Country">
+  <input type="text" placeholder="State">
+  <input type="text" placeholder="Postal Code"><br>
+  <a href="{% url 'cart:process' %}" class="button"><button type='submit' class='btn btn-primary' onclick='alertuser();'>Submit</button> </a>
+<script>
+  function alertuser(){
+    alert("Address is saved for future purchases");
+    window.location.href = "{% url 'cart:process' %}";
+  }
+</script>
+
